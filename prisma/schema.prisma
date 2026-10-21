@@ -1,0 +1,323 @@
+// Product Design Coach — local single-user data model.
+// JSON payloads are stored as validated strings (see src/domain/schemas) because
+// SQLite has no native JSON column type. Uploaded file bytes never live here:
+// only metadata, extracted text and a storage path relative to APP_DATA_DIR.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  // Set automatically from APP_DATA_DIR by scripts/db-migrate.ts and src/server/db.ts.
+  url      = env("DATABASE_URL")
+}
+
+model Project {
+  id                String    @id @default(cuid())
+  title             String
+  description       String
+  industry          String
+  market            String?
+  platform          String
+  experienceLevel   String
+  difficulty        String
+  preferredLanguage String
+  /// draft | active | completed | archived
+  status            String    @default("active")
+  briefJson         String
+  briefVersion      Int       @default(1)
+  currentStageId    String?
+  /// Practice mode lets the user open any stage without passing earlier gates.
+  /// It never marks an unapproved stage as passed.
+  practiceMode      Boolean   @default(false)
+  isSample          Boolean   @default(false)
+  /// ai | mock | manual — how the brief was produced
+  generationSource  String    @default("manual")
+  generationModel   String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  completedAt       DateTime?
+  lastOpenedAt      DateTime?
+
+  briefVersions ProjectBriefVersion[]
+  stages        Stage[]
+  tasks         Task[]
+  submissions   Submission[]
+  reviews       Review[]
+  caseStudy     CaseStudy?
+  coachMessages CoachMessage[]
+  aiJobs        AiJob[]
+
+  @@index([status, updatedAt])
+}
+
+model ProjectBriefVersion {
+  id            String   @id @default(cuid())
+  projectId     String
+  versionNumber Int
+  briefJson     String
+  changeSummary String
+  /// ai | mock | user
+  source        String   @default("user")
+  createdAt     DateTime @default(now())
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, versionNumber])
+}
+
+model Stage {
+  id                     String    @id @default(cuid())
+  projectId              String
+  /// One of the eight canonical stage keys (src/domain/stages/definitions.ts)
+  stageKey               String
+  title                  String
+  description            String
+  orderIndex             Int
+  /// locked | available | in_progress | in_review | needs_revision | ready_to_complete | completed | needs_revalidation
+  status                 String    @default("locked")
+  passThreshold          Int       @default(80)
+  /// Criteria weights snapshot: [{ id, weight, mandatory, minScore }]
+  weightConfigJson       String
+  /// Full criteria snapshot including localized names and descriptions
+  acceptanceCriteriaJson String
+  deliverablesJson       String
+  /// Project-specific tailoring produced by the stage customization prompt
+  customizationJson      String?
+  revalidationReason     String?
+  startedAt              DateTime?
+  completedAt            DateTime?
+  createdAt              DateTime  @default(now())
+  updatedAt              DateTime  @updatedAt
+
+  project     Project        @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  tasks       Task[]
+  submissions Submission[]
+  reviews     Review[]
+  messages    CoachMessage[]
+
+  @@unique([projectId, stageKey])
+  @@index([projectId, orderIndex])
+}
+
+model Task {
+  id                     String   @id @default(cuid())
+  projectId              String
+  stageId                String
+  /// Canonical task key when the task comes from the stage definition
+  taskKey                String?
+  title                  String
+  description            String   @default("")
+  /// canonical | tailored | custom
+  taskType               String   @default("canonical")
+  /// todo | done
+  status                 String   @default("todo")
+  isMandatory            Boolean  @default(true)
+  orderIndex             Int
+  acceptanceCriteriaJson String   @default("[]")
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+
+  project       Project        @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  stage         Stage          @relation(fields: [stageId], references: [id], onDelete: Cascade)
+  revisionTasks RevisionTask[]
+
+  @@index([stageId, orderIndex])
+}
+
+model Submission {
+  id            String    @id @default(cuid())
+  projectId     String
+  stageId       String
+  /// Assigned when the draft is submitted; null while it is a draft.
+  versionNumber Int?
+  notes         String    @default("")
+  textContent   String    @default("")
+  /// draft | submitted
+  status        String    @default("draft")
+  basedOnId     String?
+  submittedAt   DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  project Project           @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  stage   Stage             @relation(fields: [stageId], references: [id], onDelete: Cascade)
+  assets  SubmissionAsset[]
+  reviews Review[]
+
+  @@unique([stageId, versionNumber])
+  @@index([stageId, status])
+}
+
+model SubmissionAsset {
+  id                     String   @id @default(cuid())
+  submissionId           String
+  /// image | pdf | figma
+  kind                   String
+  originalFilename       String
+  storedFilename         String?
+  mimeType               String?
+  fileSize               Int?
+  sha256                 String?
+  /// Path relative to APP_DATA_DIR/uploads. Never served directly.
+  storagePath            String?
+  thumbnailPath          String?
+  /// Downscaled copy used for AI vision requests
+  analysisPath           String?
+  sourceUrl              String?
+  /// uploaded | validating | extracting | ready | failed
+  extractionStatus       String   @default("uploaded")
+  extractionError        String?
+  extractedText          String?
+  extractionMetadataJson String   @default("{}")
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+
+  submission Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+
+  @@index([submissionId])
+  @@index([storagePath])
+}
+
+/// Reviews are immutable once created. Corrections create a new review.
+model Review {
+  id               String   @id @default(cuid())
+  projectId        String
+  stageId          String
+  submissionId     String
+  provider         String
+  model            String
+  isMock           Boolean  @default(false)
+  promptVersion    String
+  rubricVersion    String
+  overallScore     Int
+  /// pass | revise | needs_more_evidence
+  decision         String
+  confidence       Int
+  summary          String
+  reviewJson       String
+  comparisonJson   String?
+  previousReviewId String?
+  usageJson        String?
+  createdAt        DateTime @default(now())
+
+  project       Project        @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  stage         Stage          @relation(fields: [stageId], references: [id], onDelete: Cascade)
+  submission    Submission     @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  revisionTasks RevisionTask[]
+  messages      CoachMessage[]
+
+  @@index([stageId, createdAt])
+  @@index([projectId, createdAt])
+}
+
+model RevisionTask {
+  id               String   @id @default(cuid())
+  reviewId         String
+  stageId          String
+  taskId           String?
+  /// Identifier the reviewer used for this task inside the review JSON
+  reviewTaskKey    String
+  title            String
+  description      String
+  reason           String   @default("")
+  suggestedAction  String   @default("")
+  /// critical | major | minor | suggestion
+  severity         String
+  criterionId      String?
+  theme            String?
+  /// open | completed | dismissed
+  status           String   @default("open")
+  resolutionNote   String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  review Review @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  task   Task?  @relation(fields: [taskId], references: [id], onDelete: SetNull)
+
+  @@index([reviewId])
+  @@index([stageId, status])
+}
+
+/// Mentor conversations. Never changes an official score.
+model CoachMessage {
+  id        String   @id @default(cuid())
+  projectId String
+  stageId   String?
+  reviewId  String?
+  /// user | assistant
+  role      String
+  content   String
+  provider  String?
+  model     String?
+  isMock    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  stage   Stage?  @relation(fields: [stageId], references: [id], onDelete: Cascade)
+  review  Review? @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+
+  @@index([projectId, stageId, createdAt])
+  @@index([reviewId, createdAt])
+}
+
+model CaseStudy {
+  id              String   @id @default(cuid())
+  projectId       String   @unique
+  contentMarkdown String
+  outlineJson     String
+  /// ai | mock | user
+  source          String
+  generatedAt     DateTime @default(now())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+/// Persisted status for long-running AI operations (generation, reviews, drafting).
+model AiJob {
+  id           String    @id @default(cuid())
+  /// generate_brief | customize_stages | review | follow_up | case_study
+  type         String
+  /// queued | running | succeeded | failed | cancelled
+  status       String    @default("queued")
+  projectId    String?
+  stageId      String?
+  submissionId String?
+  inputJson    String
+  resultJson   String?
+  errorCode    String?
+  errorMessage String?
+  attempts     Int       @default(0)
+  provider     String?
+  model        String?
+  usageJson    String?
+  createdAt    DateTime  @default(now())
+  startedAt    DateTime?
+  finishedAt   DateTime?
+  updatedAt    DateTime  @updatedAt
+
+  project Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([status, createdAt])
+  @@index([projectId, type, createdAt])
+  @@index([submissionId])
+}
+
+model AppSettings {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  valueJson String
+  updatedAt DateTime @updatedAt
+}
+
+model BackupRecord {
+  id        String   @id @default(cuid())
+  filename  String   @unique
+  sizeBytes Int
+  /// manual | pre_restore
+  kind      String
+  createdAt DateTime @default(now())
+}
