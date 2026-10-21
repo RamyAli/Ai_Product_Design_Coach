@@ -4,6 +4,7 @@ import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   plugins: [tsconfigPaths(), react()],
+  esbuild: { jsx: "automatic" },
   test: {
     globalSetup: ["tests/globalSetup.ts"],
     setupFiles: ["tests/setup.ts"],

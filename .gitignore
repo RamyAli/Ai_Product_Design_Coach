@@ -12,3 +12,4 @@ next-env.d.ts
 # Local application data (database, uploads, backups) when kept inside the repo
 .app-data/
 .test-data/
+.e2e-data/

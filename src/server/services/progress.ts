@@ -132,7 +132,7 @@ export async function computeLearningProgress(opts: { includeDemo: boolean }) {
       date: r.createdAt.toISOString(),
       score: r.overallScore,
       decision: r.decision,
-      stageTitle: r.stage.title,
+      stageKey: r.stage.stageKey,
       projectTitle: r.project.title,
       isMock: r.isMock,
     })),
@@ -151,7 +151,7 @@ export async function getDashboardData() {
     db.project.findMany({
       where: { status: { not: "archived" } },
       orderBy: [{ lastOpenedAt: "desc" }, { updatedAt: "desc" }],
-      include: { stages: { select: { id: true, status: true, orderIndex: true, title: true } } },
+      include: { stages: { select: { id: true, status: true, orderIndex: true, title: true, stageKey: true } } },
     }),
     db.aiJob.findMany({ where: { type: "review", status: { in: ["queued", "running"] } }, orderBy: { createdAt: "desc" }, take: 10 }),
     db.aiJob.findMany({
@@ -163,7 +163,7 @@ export async function getDashboardData() {
       where: { status: "submitted" },
       orderBy: { submittedAt: "desc" },
       take: 6,
-      include: { stage: { select: { title: true, id: true } }, project: { select: { title: true, id: true } }, reviews: { orderBy: { createdAt: "desc" }, take: 1, select: { id: true, overallScore: true, decision: true, isMock: true } } },
+      include: { stage: { select: { title: true, id: true, stageKey: true } }, project: { select: { title: true, id: true } }, reviews: { orderBy: { createdAt: "desc" }, take: 1, select: { id: true, overallScore: true, decision: true, isMock: true } } },
     }),
     db.stage.findMany({
       where: { status: { in: ["needs_revision", "needs_revalidation"] }, project: { status: { not: "archived" } } },
@@ -199,7 +199,7 @@ export async function getDashboardData() {
       updatedAt: p.updatedAt.toISOString(),
       completedStages: done,
       totalStages: sorted.length,
-      currentStage: current ? { id: current.id, title: current.title, status: current.status, orderIndex: current.orderIndex } : null,
+      currentStage: current ? { id: current.id, title: current.title, stageKey: current.stageKey, status: current.status, orderIndex: current.orderIndex } : null,
     };
   };
   const all = projects.map(summarize);
@@ -210,14 +210,15 @@ export async function getDashboardData() {
     lastActive: active.find((p) => p.status === "active") ?? null,
     pendingReviews: activeJobs.map((j) => {
       const s = jobStages.find((st) => st.id === j.stageId);
-      return { jobId: j.id, status: j.status, stageId: j.stageId, stageTitle: s?.title ?? "", projectId: s?.project.id ?? "", projectTitle: s?.project.title ?? "", createdAt: j.createdAt.toISOString() };
+      return { jobId: j.id, status: j.status, stageId: j.stageId, stageKey: s?.stageKey ?? "", stageTitle: s?.title ?? "", projectId: s?.project.id ?? "", projectTitle: s?.project.title ?? "", createdAt: j.createdAt.toISOString() };
     }),
     failedReviews: failed.map((j) => {
       const s = jobStages.find((st) => st.id === j.stageId);
-      return { jobId: j.id, submissionId: j.submissionId, stageId: j.stageId, stageTitle: s?.title ?? "", projectId: s?.project.id ?? "", projectTitle: s?.project.title ?? "", message: j.errorMessage ?? "" };
+      return { jobId: j.id, submissionId: j.submissionId, stageId: j.stageId, stageKey: s?.stageKey ?? "", stageTitle: s?.title ?? "", projectId: s?.project.id ?? "", projectTitle: s?.project.title ?? "", message: j.errorMessage ?? "" };
     }),
     revisionRequests: revisionStages.map((s) => ({
       stageId: s.id,
+      stageKey: s.stageKey,
       stageTitle: s.title,
       status: s.status,
       projectId: s.project.id,
@@ -231,6 +232,7 @@ export async function getDashboardData() {
       versionNumber: s.versionNumber,
       submittedAt: s.submittedAt?.toISOString() ?? null,
       stageId: s.stage.id,
+      stageKey: s.stage.stageKey,
       stageTitle: s.stage.title,
       projectId: s.project.id,
       projectTitle: s.project.title,

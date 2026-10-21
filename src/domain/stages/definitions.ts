@@ -1335,3 +1335,10 @@ export function downstreamStages(key: StageKey): StageKey[] {
   }
   return STAGE_DEFINITIONS.filter((d) => result.has(d.key)).map((d) => d.key);
 }
+
+/** Canonical stage title in the requested UI language. */
+export function stageTitle(stageKey: string, locale: "en" | "ar"): string {
+  const def = byKey.get(stageKey as StageKey);
+  if (!def) return stageKey;
+  return typeof def.title === "string" ? def.title : def.title[locale];
+}

@@ -5,7 +5,7 @@ import { lt } from "@/domain/localized";
 import { getProvider } from "../ai";
 import { caseStudyPrompt } from "../ai/prompts/caseStudy";
 import { db, parseJson } from "../db";
-import { AppError, notFound } from "../errors";
+import { AppError } from "../errors";
 import { createJob, type JobOutcome } from "../jobs/queue";
 import { readBrief, requireProject } from "./projects";
 

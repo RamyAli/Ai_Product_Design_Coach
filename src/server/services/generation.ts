@@ -22,9 +22,9 @@ export interface GeneratedBriefResult {
   promptVersions: string[];
 }
 
-export async function startBriefGeneration(rawInput: unknown) {
+export async function startBriefGeneration(rawInput: unknown, extraAvoidTitles: string[] = []) {
   const input = GeneratorInputSchema.parse(rawInput);
-  const avoidTitles = await recentProjectTitles();
+  const avoidTitles = [...extraAvoidTitles.slice(0, 5).map((t) => t.slice(0, 200)), ...(await recentProjectTitles())];
   return createJob({ type: "generate_brief", input: { input, avoidTitles } });
 }
 
