@@ -813,7 +813,10 @@
     "clearBody": "This cannot be undone. Create a backup first if you might need anything.",
     "typeDelete": "Type DELETE to confirm",
     "clearConfirm": "Delete everything",
-    "cleared": "All data cleared."
+    "cleared": "All data cleared.",
+    "exportTitle": "Export project data",
+    "exportBody": "Download one project as JSON: brief history, stages, tasks, submissions (text and file metadata), reviews and mentor messages. Use a backup to include uploaded files.",
+    "noProjects": "No projects yet."
   },
   "validation": {
     "invalid": "Check this field.",

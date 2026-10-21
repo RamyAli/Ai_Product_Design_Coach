@@ -16,7 +16,13 @@ export async function generateMetadata() {
 
 export default async function SettingsPage() {
   const t = await getTranslations("settings");
-  const [settings, provider, backups, sampleCount] = await Promise.all([getSettings(), getProviderStatus(), listBackups(), db.project.count({ where: { isSample: true } })]);
+  const [settings, provider, backups, sampleCount, projects] = await Promise.all([
+    getSettings(),
+    getProviderStatus(),
+    listBackups(),
+    db.project.count({ where: { isSample: true } }),
+    db.project.findMany({ orderBy: { updatedAt: "desc" }, select: { id: true, title: true } }),
+  ]);
   const paths = getDataPaths();
   return (
     <PageContainer>
@@ -31,6 +37,7 @@ export default async function SettingsPage() {
         sampleCount={sampleCount}
         hardMaxUploadMb={LIMITS.hardMaxUploadMb}
         envProviderForced={Boolean(process.env.AI_PROVIDER?.trim())}
+        projects={projects}
       />
     </PageContainer>
   );

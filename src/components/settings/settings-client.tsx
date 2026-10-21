@@ -45,6 +45,7 @@ export function SettingsClient({
   sampleCount,
   hardMaxUploadMb,
   envProviderForced,
+  projects,
 }: {
   settings: SettingsData;
   provider: { active: string; reason: string; model: string; realProviderReady: boolean };
@@ -55,6 +56,7 @@ export function SettingsClient({
   sampleCount: number;
   hardMaxUploadMb: number;
   envProviderForced: boolean;
+  projects: { id: string; title: string }[];
 }) {
   const t = useTranslations("settings");
   const te = useTranslations("enums");
@@ -386,6 +388,25 @@ export function SettingsClient({
                 ))}
               </ul>
             ) : null}
+          </div>
+
+          <div>
+            <h3 className="mb-2 text-sm font-semibold">{t("exportTitle")}</h3>
+            <p className="mb-2 text-sm text-muted">{t("exportBody")}</p>
+            {projects.length ? (
+              <ul className="flex flex-col gap-1 text-sm">
+                {projects.map((p) => (
+                  <li key={p.id}>
+                    <a className="inline-flex items-center gap-1.5 text-primary hover:underline" href={`/api/projects/${p.id}/export`} download dir="auto">
+                      <Download className="size-3.5" aria-hidden />
+                      {p.title}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-sm text-subtle">{t("noProjects")}</p>
+            )}
           </div>
 
           <div>

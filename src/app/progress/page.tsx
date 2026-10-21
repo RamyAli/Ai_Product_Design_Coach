@@ -157,7 +157,7 @@ export default async function ProgressPage({ searchParams }: { searchParams: Pro
           </h2>
           <nav aria-label={t("chooseProject")} className="flex flex-wrap gap-1">
             {projects.map((p) => (
-              <Link key={p.id} href={qs({ project: p.id })} aria-current={p.id === selectedId ? "page" : undefined} className="max-w-56 truncate rounded-full border border-border px-3 py-1 text-xs hover:bg-surface-muted aria-[current=page]:border-primary aria-[current=page]:bg-primary-soft aria-[current=page]:text-primary">
+              <Link key={p.id} href={qs({ project: p.id })} aria-current={p.id === selectedId ? "page" : undefined} dir="auto" className="max-w-56 truncate rounded-full border border-border px-3 py-1 text-xs hover:bg-surface-muted aria-[current=page]:border-primary aria-[current=page]:bg-primary-soft aria-[current=page]:text-primary">
                 {p.title}
               </Link>
             ))}

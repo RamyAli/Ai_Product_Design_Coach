@@ -13,3 +13,4 @@ next-env.d.ts
 .app-data/
 .test-data/
 .e2e-data/
+.tmp-clean/

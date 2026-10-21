@@ -59,12 +59,12 @@ export function TaskChecklist({ tasks, disabled }: { tasks: ChecklistTask[]; dis
                 onChange={(e) => void toggle(task.id, e.target.checked)}
               />
               <span className="min-w-0">
-                <span className={task.status === "done" ? "text-muted line-through" : ""}>{task.title}</span>
+                <span dir="auto" className={task.status === "done" ? "text-muted line-through" : ""}>{task.title}</span>
                 <span className="ms-1.5 inline-flex gap-1 align-middle">
                   {!task.isMandatory ? <Badge>{t("optional")}</Badge> : null}
                   {task.taskType === "tailored" ? <Badge variant="info">{t("tailored")}</Badge> : null}
                 </span>
-                {task.description ? <span className="mt-0.5 block text-xs text-subtle">{task.description}</span> : null}
+                {task.description ? <span dir="auto" className="mt-0.5 block text-xs text-subtle">{task.description}</span> : null}
               </span>
             </label>
           </li>

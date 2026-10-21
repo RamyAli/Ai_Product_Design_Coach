@@ -82,7 +82,7 @@ export default async function ProjectsPage({ searchParams }: { searchParams: Pro
                         {p.industry} · {te(`platform.${p.platform}`)} · {te(`difficulty.${p.difficulty}`)}
                       </span>
                     </div>
-                    <h2 className="truncate text-base font-semibold">
+                    <h2 className="truncate text-base font-semibold" dir="auto">
                       <Link href={`/projects/${p.id}`} className="hover:underline">
                         {p.title}
                       </Link>

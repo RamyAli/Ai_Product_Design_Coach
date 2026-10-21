@@ -165,7 +165,7 @@ export default async function StageWorkspacePage({ params }: { params: Promise<{
           {customization?.focus ? (
             <div className="rounded-md bg-primary-soft p-3 md:col-span-2">
               <h3 className="mb-1 text-xs font-semibold uppercase tracking-wide text-primary">{t("projectFocus")}</h3>
-              <p className="text-sm">{customization.focus}</p>
+              <p className="text-sm" dir="auto">{customization.focus}</p>
             </div>
           ) : null}
         </CardContent>
@@ -189,10 +189,10 @@ export default async function StageWorkspacePage({ params }: { params: Promise<{
                       <Badge>{te(`evidence.${d.evidence}`)}</Badge>
                     </p>
                     <p className="text-sm text-muted">{lt(d.description, locale)}</p>
-                    {stageNoteFor(d.id) ? <p className="mt-1 text-xs text-primary">{stageNoteFor(d.id)}</p> : null}
+                    {stageNoteFor(d.id) ? <p className="mt-1 text-xs text-primary" dir="auto">{stageNoteFor(d.id)}</p> : null}
                   </div>
                   {status ? (
-                    <Badge variant={status === "provided" ? "success" : status === "partial" ? "warning" : status === "missing" ? "danger" : "info"}>
+                    <Badge className="self-start" variant={status === "provided" ? "success" : status === "partial" ? "warning" : status === "missing" ? "danger" : "info"}>
                       {te(`deliverableStatus.${status}`)}
                     </Badge>
                   ) : null}
@@ -348,7 +348,7 @@ export default async function StageWorkspacePage({ params }: { params: Promise<{
                   </span>
                 </div>
               </div>
-              <p className="line-clamp-4 text-sm text-muted">{latestReview.summary}</p>
+              <p className="line-clamp-4 text-sm text-muted" dir="auto">{latestReview.summary}</p>
               {openTasks.length ? (
                 <div>
                   <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-subtle">{t("openRevisionTasks", { count: openTasks.length })}</h3>
@@ -356,7 +356,7 @@ export default async function StageWorkspacePage({ params }: { params: Promise<{
                     {openTasks.slice(0, 5).map((r) => (
                       <li key={r.id} className="flex items-start gap-2 text-sm">
                         <SeverityBadge severity={r.severity} />
-                        <span className="min-w-0">{r.title}</span>
+                        <span className="min-w-0" dir="auto">{r.title}</span>
                       </li>
                     ))}
                   </ul>
@@ -365,7 +365,7 @@ export default async function StageWorkspacePage({ params }: { params: Promise<{
               {latestStored.nextSteps.length ? (
                 <div>
                   <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-subtle">{t("nextSteps")}</h3>
-                  <ul className="list-disc ps-5 text-sm">
+                  <ul className="list-disc ps-5 text-sm" dir="auto">
                     {latestStored.nextSteps.map((n, i) => (
                       <li key={i}>{n}</li>
                     ))}

@@ -95,7 +95,7 @@ export default async function DashboardPage() {
                           {p.status === "draft" ? <Badge>{te("projectStatus.draft")}</Badge> : null}
                           {p.isSample ? <Badge variant="warning">{t("sample")}</Badge> : null}
                         </div>
-                        <CardTitle as="h3" className="line-clamp-2">
+                        <CardTitle as="h3" className="line-clamp-2" dir="auto">
                           <Link href={`/projects/${p.id}`} className="hover:underline">
                             {p.title}
                           </Link>
@@ -174,7 +174,7 @@ export default async function DashboardPage() {
                     <li key={p.id}>
                       <Link href={`/projects/${p.id}`} className="flex items-center gap-2 rounded-md border border-border bg-surface px-3 py-2 text-sm hover:bg-surface-muted">
                         <CheckCircle2 className="size-4 text-success" aria-hidden />
-                        <span className="truncate">{p.title}</span>
+                        <span className="truncate" dir="auto">{p.title}</span>
                       </Link>
                     </li>
                   ))}
