@@ -32,6 +32,8 @@
   --color-danger-soft: var(--danger-soft);
   --color-info: var(--info);
   --color-info-soft: var(--info-soft);
+  --color-notice: var(--notice);
+  --color-notice-warning: var(--notice-warning);
   --color-heat-0: var(--heat-0);
   --color-heat-1: var(--heat-1);
   --color-heat-2: var(--heat-2);
@@ -80,6 +82,8 @@
   --danger-soft: #fff1f1;
   --info: #0043ce; /* support-info, Blue 70 */
   --info-soft: #edf5ff;
+  --notice: #f4f4f4; /* neutral notice card */
+  --notice-warning: #ff832b; /* Orange 40 icon tile */
   --heat-0: #f4f4f4;
   --heat-1: #d0e2ff; /* Blue 20 */
   --heat-2: #a6c8ff; /* Blue 30 */
@@ -117,6 +121,8 @@
   --danger-soft: #2d0709;
   --info: #78a9ff;
   --info-soft: #001d6c;
+  --notice: #2a2a2a;
+  --notice-warning: #ff832b;
   --heat-0: #333333;
   --heat-1: #002d9c; /* Blue 80 */
   --heat-2: #0043ce;

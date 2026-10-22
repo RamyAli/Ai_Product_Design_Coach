@@ -12,12 +12,12 @@ export function Progress({ value, label, className, tone = "primary" }: { value:
   );
 }
 
+// Apple-style notice: a soft neutral card; colour lives only in the filled icon tile.
 const alertStyles = {
-  // Carbon inline notifications: tinted background with a 3px leading accent bar
-  info: { box: "border-s-info bg-info-soft text-foreground", icon: Info, iconClass: "text-info" },
-  success: { box: "border-s-success-strong bg-success-soft text-foreground", icon: CheckCircle2, iconClass: "text-success" },
-  warning: { box: "border-s-warning-strong bg-warning-soft text-foreground", icon: AlertTriangle, iconClass: "text-warning" },
-  danger: { box: "border-s-danger-strong bg-danger-soft text-foreground", icon: XCircle, iconClass: "text-danger" },
+  info: { tile: "bg-interactive", icon: Info },
+  success: { tile: "bg-success-strong", icon: CheckCircle2 },
+  warning: { tile: "bg-notice-warning", icon: AlertTriangle },
+  danger: { tile: "bg-danger-strong", icon: XCircle },
 };
 
 export function Alert({
@@ -38,13 +38,15 @@ export function Alert({
   const s = alertStyles[tone];
   const Icon = s.icon;
   return (
-    <div role={role} className={cn("flex flex-wrap items-start gap-3 rounded-lg border-s-[3px] px-4 py-3 text-sm sm:flex-nowrap", s.box, className)}>
-      <Icon className={cn("mt-0.5 size-4 shrink-0", s.iconClass)} aria-hidden />
+    <div role={role} className={cn("flex flex-wrap items-center gap-x-4 gap-y-3 rounded-2xl bg-notice p-4 text-sm sm:flex-nowrap", className)}>
+      <span className={cn("flex size-9 shrink-0 items-center justify-center self-start rounded-[10px] text-white", s.tile)} aria-hidden>
+        <Icon className="size-[18px]" strokeWidth={2.25} />
+      </span>
       <div className="min-w-0 flex-1">
-        {title ? <p className="font-medium">{title}</p> : null}
-        {children ? <div className={cn("text-muted", title && "mt-0.5")}>{children}</div> : null}
+        {title ? <p className="font-semibold text-foreground">{title}</p> : null}
+        {children ? <div className={cn("leading-relaxed text-muted", title && "mt-0.5")}>{children}</div> : null}
       </div>
-      {action ? <div className="shrink-0 self-center">{action}</div> : null}
+      {action ? <div className="shrink-0 ms-[52px] sm:ms-0 [&_a]:rounded-full [&_button]:rounded-full">{action}</div> : null}
     </div>
   );
 }
