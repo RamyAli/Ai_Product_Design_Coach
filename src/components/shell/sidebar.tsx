@@ -137,7 +137,7 @@ function UserCard({ info }: { info: ShellInfo }) {
   return (
     <div className="rounded-xl border border-border bg-surface">
       <Link href="/settings#general" className="flex items-center gap-3 rounded-t-xl p-3 hover:bg-surface-muted">
-        <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-success-strong text-sm font-bold text-white" aria-hidden>
+        <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-success-strong text-sm font-bold text-white" aria-hidden>
           {initials(name) || "•"}
         </span>
         <span className="min-w-0 flex-1">

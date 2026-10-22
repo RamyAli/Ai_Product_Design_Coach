@@ -41,7 +41,7 @@ export function ActivityHeatmap({ days, locale }: { days: Day[]; locale: Locale 
       <CardHeader className="flex-row flex-wrap items-start justify-between gap-3 space-y-0">
         <div>
           <CardTitle>{t("activityTitle")}</CardTitle>
-          <p className="mt-0.5 text-xs text-subtle">{t(metric === "submissions" ? "activityTotalSubmissions" : "activityTotalReviews", { count: total })}</p>
+          <p className="mt-0.5 text-xs text-subtle">{t(metric === "submissions" ? "activityTotalSubmissions" : "activityTotalReviews", { count: total, weeks: Math.round(days.length / 7) })}</p>
         </div>
         <div role="group" aria-label={t("activityMetric")} className="inline-flex rounded-lg bg-surface-muted p-1">
           {(["submissions", "reviews"] as const).map((m) => (
@@ -66,36 +66,41 @@ export function ActivityHeatmap({ days, locale }: { days: Day[]; locale: Locale 
             </span>
           ))}
         </div>
-        <div className="flex gap-2 overflow-x-auto pb-1">
-          <div className="grid shrink-0 grid-rows-7 gap-1.5 pt-5 text-[11px] text-subtle" aria-hidden>
-            {Array.from({ length: 7 }, (_, row) => (
-              <span key={row} className="flex h-4 items-center">
-                {weekdayLabels.find((w) => w.row === row)?.label ?? ""}
-              </span>
-            ))}
-          </div>
-          <div role="img" aria-label={t("activityAria", { count: total, weeks: columns.length })} className="flex min-w-[36rem] flex-1 gap-1.5">
+        {/* Grid: a label column plus one column per week; every cell is a square. */}
+        <div className="overflow-x-auto pb-1">
+          <div
+            role="img"
+            aria-label={t("activityAria", { count: total, weeks: Math.round(days.length / 7) })}
+            className="grid min-w-[40rem] items-center gap-1.5"
+            style={{ gridTemplateColumns: `auto repeat(${columns.length}, minmax(0, 1fr))` }}
+          >
+            <span aria-hidden />
             {columns.map((col, ci) => {
               const first = col.find(Boolean);
               const showMonth = first && (ci === 0 || first.at.getDate() <= 7);
               return (
-                <div key={ci} className="flex min-w-0 flex-1 flex-col gap-1.5">
-                  <span className="h-3.5 text-[11px] leading-none whitespace-nowrap text-subtle">{showMonth ? fmtMonth.format(first.at) : ""}</span>
-                  {Array.from({ length: 7 }, (_, row) => {
-                    const d = col[row];
-                    if (!d) return <span key={row} className="h-4 w-full" />;
-                    const n = d[metric];
-                    return (
-                      <span
-                        key={row}
-                        title={`${fmtDay.format(d.at)} · ${t(metric === "submissions" ? "activityCellSubmissions" : "activityCellReviews", { count: n })}`}
-                        className={cn("h-4 w-full rounded-[3px]", LEVEL_CLASS[level(n)])}
-                      />
-                    );
-                  })}
-                </div>
+                <span key={`m${ci}`} className="h-4 overflow-visible text-[11px] leading-none whitespace-nowrap text-subtle" aria-hidden>
+                  {showMonth ? fmtMonth.format(first.at) : ""}
+                </span>
               );
             })}
+            {Array.from({ length: 7 }, (_, row) => [
+              <span key={`l${row}`} className="pe-1 text-[11px] leading-none text-subtle" aria-hidden>
+                {weekdayLabels.find((w) => w.row === row)?.label ?? ""}
+              </span>,
+              ...columns.map((col, ci) => {
+                const d = col[row];
+                if (!d) return <span key={`c${row}-${ci}`} className="aspect-square w-full" aria-hidden />;
+                const n = d[metric];
+                return (
+                  <span
+                    key={`c${row}-${ci}`}
+                    title={`${fmtDay.format(d.at)} · ${t(metric === "submissions" ? "activityCellSubmissions" : "activityCellReviews", { count: n })}`}
+                    className={cn("aspect-square w-full rounded-[4px]", LEVEL_CLASS[level(n)])}
+                  />
+                );
+              }),
+            ])}
           </div>
         </div>
       </CardContent>

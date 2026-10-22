@@ -94,8 +94,8 @@
     "activityMetric": "نوع النشاط",
     "activitySubmissions": "الإرسالات",
     "activityReviews": "المراجعات",
-    "activityTotalSubmissions": "{count, plural, =0 {لا إرسالات} one {إرسال واحد} two {إرسالان} few {# إرسالات} many {# إرسالاً} other {# إرسال}} خلال آخر 18 أسبوعاً",
-    "activityTotalReviews": "{count, plural, =0 {لا مراجعات} one {مراجعة واحدة} two {مراجعتان} few {# مراجعات} many {# مراجعة} other {# مراجعة}} خلال آخر 18 أسبوعاً",
+    "activityTotalSubmissions": "{count, plural, =0 {لا إرسالات} one {إرسال واحد} two {إرسالان} few {# إرسالات} many {# إرسالاً} other {# إرسال}} خلال آخر {weeks} أسبوعاً",
+    "activityTotalReviews": "{count, plural, =0 {لا مراجعات} one {مراجعة واحدة} two {مراجعتان} few {# مراجعات} many {# مراجعة} other {# مراجعة}} خلال آخر {weeks} أسبوعاً",
     "activityAria": "خريطة النشاط: {count} خلال آخر {weeks} أسبوعاً",
     "activityCellSubmissions": "{count, plural, =0 {لا إرسالات} one {إرسال واحد} two {إرسالان} few {# إرسالات} many {# إرسالاً} other {# إرسال}}",
     "activityCellReviews": "{count, plural, =0 {لا مراجعات} one {مراجعة واحدة} two {مراجعتان} few {# مراجعات} many {# مراجعة} other {# مراجعة}}"

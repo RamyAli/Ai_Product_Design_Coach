@@ -22,7 +22,7 @@ export default async function DashboardPage() {
   const te = await getTranslations("enums");
   const locale = await getAppLocale();
   const [data, settings, status] = await Promise.all([getDashboardData(), getSettings(), getProviderStatus()]);
-  const [learning, activity] = await Promise.all([computeLearningProgress({ includeDemo: true }), activityByDay(18)]);
+  const [learning, activity] = await Promise.all([computeLearningProgress({ includeDemo: true }), activityByDay(26)]);
   const hasProjects = data.active.length + data.completed.length > 0;
 
   return (

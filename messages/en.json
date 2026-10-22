@@ -94,8 +94,8 @@
     "activityMetric": "Activity type",
     "activitySubmissions": "Submissions",
     "activityReviews": "Reviews",
-    "activityTotalSubmissions": "{count, plural, =0 {No submissions} one {# submission} other {# submissions}} in the last 18 weeks",
-    "activityTotalReviews": "{count, plural, =0 {No reviews} one {# review} other {# reviews}} in the last 18 weeks",
+    "activityTotalSubmissions": "{count, plural, =0 {No submissions} one {# submission} other {# submissions}} in the last {weeks} weeks",
+    "activityTotalReviews": "{count, plural, =0 {No reviews} one {# review} other {# reviews}} in the last {weeks} weeks",
     "activityAria": "Activity heatmap: {count} in the last {weeks} weeks",
     "activityCellSubmissions": "{count, plural, =0 {no submissions} one {# submission} other {# submissions}}",
     "activityCellReviews": "{count, plural, =0 {no reviews} one {# review} other {# reviews}}"
