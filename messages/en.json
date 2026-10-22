@@ -31,7 +31,15 @@
     "closeMenu": "Close menu",
     "aiProvider": "AI provider",
     "demoMode": "Demo mode (no AI)",
-    "switchLanguage": "Switch language"
+    "switchLanguage": "Switch language",
+    "sectionGeneral": "General",
+    "sectionLearning": "Learning",
+    "sectionSupport": "Support",
+    "workspace": "My workspace",
+    "projectCount": "{count, plural, =0 {no projects} one {# project} other {# projects}}",
+    "you": "You",
+    "localData": "Data stored on this device",
+    "newProject": "New project"
   },
   "dashboard": {
     "welcome": "Welcome back",
@@ -68,7 +76,29 @@
     "reviews": "Reviews",
     "includesDemo": "Includes {count, plural, one {# demo review} other {# demo reviews}}.",
     "recentThemes": "Recent feedback themes",
-    "viewProgress": "View learning progress"
+    "viewProgress": "View learning progress",
+    "kpis": "Key figures",
+    "kpiActive": "Active projects",
+    "kpiActiveHint": "Projects in progress or saved as drafts.",
+    "kpiCompletedTag": "{count} completed",
+    "kpiStages": "Stages completed",
+    "kpiStagesHint": "Stages that passed review and were marked complete, across all projects.",
+    "kpiStagesContext": "across all projects",
+    "kpiScoreHint": "Average overall score of all formal reviews.",
+    "kpiPassRate": "{rate}% passed",
+    "kpiReviewsContext": "{count, plural, one {# review} other {# reviews}}",
+    "kpiOpenTasks": "Open revision tasks",
+    "kpiOpenTasksHint": "Revision tasks you haven’t marked done or dismissed.",
+    "kpiStagesNeedRevision": "{count, plural, one {# stage needs revision} other {# stages need revision}}",
+    "activityTitle": "Activity",
+    "activityMetric": "Activity type",
+    "activitySubmissions": "Submissions",
+    "activityReviews": "Reviews",
+    "activityTotalSubmissions": "{count, plural, =0 {No submissions} one {# submission} other {# submissions}} in the last 18 weeks",
+    "activityTotalReviews": "{count, plural, =0 {No reviews} one {# review} other {# reviews}} in the last 18 weeks",
+    "activityAria": "Activity heatmap: {count} in the last {weeks} weeks",
+    "activityCellSubmissions": "{count, plural, =0 {no submissions} one {# submission} other {# submissions}}",
+    "activityCellReviews": "{count, plural, =0 {no reviews} one {# review} other {# reviews}}"
   },
   "projects": {
     "title": "My projects",
@@ -944,5 +974,17 @@
       "ready": "Ready",
       "failed": "Failed"
     }
+  },
+  "breadcrumb": {
+    "label": "Breadcrumb",
+    "workspace": "Workspace",
+    "project": "Project",
+    "review": "Review",
+    "stage": "Stage",
+    "submission": "Submission",
+    "theme": "Theme: {current}. Switch to {next}",
+    "theme_light": "light",
+    "theme_dark": "dark",
+    "theme_system": "system"
   }
 }

@@ -8,6 +8,7 @@ A local-first web app that acts as a personal AI mentor for UX/UI and product de
 - Works offline in a clearly labelled **demo mode** (no API key needed)
 - Uses **Anthropic Claude** when you add an API key; the provider layer can take other providers
 - All data stays on your computer (SQLite + local files)
+- Clean dashboard UI built on IBM Carbon colour tokens, with Plus Jakarta Sans (Latin) and Tajawal (Arabic), light/dark/system themes
 
 ---
 

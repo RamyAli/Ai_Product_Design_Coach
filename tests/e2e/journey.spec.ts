@@ -39,7 +39,7 @@ test("full journey: generate, submit, review, revise, pass, persist, switch lang
   await page.getByRole("button", { name: "Generate idea and brief" }).click();
   await expect(page.getByRole("button", { name: "Accept and start" })).toBeVisible({ timeout: 30_000 });
   await expect(page.getByText("Sample brief from the offline generator")).toBeVisible();
-  const featureCards = page.locator("h3", { hasText: "Focus features" }).locator("xpath=ancestor::div[contains(@class,'rounded-lg')][1]").locator(".rounded-md.border");
+  const featureCards = page.getByTestId("focus-feature");
   const featureCount = await featureCards.count();
   expect(featureCount).toBeGreaterThanOrEqual(2);
   expect(featureCount).toBeLessThanOrEqual(4);

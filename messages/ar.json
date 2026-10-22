@@ -31,7 +31,15 @@
     "closeMenu": "إغلاق القائمة",
     "aiProvider": "مزوّد الذكاء الاصطناعي",
     "demoMode": "الوضع التجريبي (بلا ذكاء اصطناعي)",
-    "switchLanguage": "تغيير اللغة"
+    "switchLanguage": "تغيير اللغة",
+    "sectionGeneral": "عام",
+    "sectionLearning": "التعلّم",
+    "sectionSupport": "الدعم",
+    "workspace": "مساحة عملي",
+    "projectCount": "{count, plural, =0 {لا مشاريع} one {مشروع واحد} two {مشروعان} few {# مشاريع} many {# مشروعاً} other {# مشروع}}",
+    "you": "أنت",
+    "localData": "البيانات محفوظة على هذا الجهاز",
+    "newProject": "مشروع جديد"
   },
   "dashboard": {
     "welcome": "مرحباً بعودتك",
@@ -68,7 +76,29 @@
     "reviews": "المراجعات",
     "includesDemo": "تشمل {count, plural, =0 {لا مراجعات تجريبية} one {مراجعة تجريبية واحدة} two {مراجعتين تجريبيتين} few {# مراجعات تجريبية} many {# مراجعة تجريبية} other {# مراجعة تجريبية}}.",
     "recentThemes": "محاور الملاحظات الأخيرة",
-    "viewProgress": "عرض تقدّم التعلّم"
+    "viewProgress": "عرض تقدّم التعلّم",
+    "kpis": "الأرقام الرئيسية",
+    "kpiActive": "المشاريع النشطة",
+    "kpiActiveHint": "المشاريع قيد العمل أو المحفوظة كمسودات.",
+    "kpiCompletedTag": "{count} مكتمل",
+    "kpiStages": "المراحل المكتملة",
+    "kpiStagesHint": "المراحل التي اجتازت المراجعة وتم إكمالها في جميع المشاريع.",
+    "kpiStagesContext": "في جميع المشاريع",
+    "kpiScoreHint": "متوسط الدرجة الإجمالية لجميع المراجعات الرسمية.",
+    "kpiPassRate": "نجح {rate}%",
+    "kpiReviewsContext": "{count, plural, =0 {لا مراجعات} one {مراجعة واحدة} two {مراجعتان} few {# مراجعات} many {# مراجعة} other {# مراجعة}}",
+    "kpiOpenTasks": "مهام التعديل المفتوحة",
+    "kpiOpenTasksHint": "مهام التعديل التي لم تحددها كمنجزة أو تتجاهلها.",
+    "kpiStagesNeedRevision": "{count, plural, =0 {لا مراحل تحتاج تعديلاً} one {مرحلة واحدة تحتاج تعديلاً} two {مرحلتان تحتاجان تعديلاً} few {# مراحل تحتاج تعديلاً} many {# مرحلة تحتاج تعديلاً} other {# مرحلة تحتاج تعديلاً}}",
+    "activityTitle": "النشاط",
+    "activityMetric": "نوع النشاط",
+    "activitySubmissions": "الإرسالات",
+    "activityReviews": "المراجعات",
+    "activityTotalSubmissions": "{count, plural, =0 {لا إرسالات} one {إرسال واحد} two {إرسالان} few {# إرسالات} many {# إرسالاً} other {# إرسال}} خلال آخر 18 أسبوعاً",
+    "activityTotalReviews": "{count, plural, =0 {لا مراجعات} one {مراجعة واحدة} two {مراجعتان} few {# مراجعات} many {# مراجعة} other {# مراجعة}} خلال آخر 18 أسبوعاً",
+    "activityAria": "خريطة النشاط: {count} خلال آخر {weeks} أسبوعاً",
+    "activityCellSubmissions": "{count, plural, =0 {لا إرسالات} one {إرسال واحد} two {إرسالان} few {# إرسالات} many {# إرسالاً} other {# إرسال}}",
+    "activityCellReviews": "{count, plural, =0 {لا مراجعات} one {مراجعة واحدة} two {مراجعتان} few {# مراجعات} many {# مراجعة} other {# مراجعة}}"
   },
   "projects": {
     "title": "مشاريعي",
@@ -944,5 +974,17 @@
       "ready": "جاهز",
       "failed": "فشل"
     }
+  },
+  "breadcrumb": {
+    "label": "مسار التنقل",
+    "workspace": "مساحة العمل",
+    "project": "المشروع",
+    "review": "المراجعة",
+    "stage": "المرحلة",
+    "submission": "الإرسال",
+    "theme": "المظهر: {current}. التبديل إلى {next}",
+    "theme_light": "فاتح",
+    "theme_dark": "داكن",
+    "theme_system": "حسب النظام"
   }
 }

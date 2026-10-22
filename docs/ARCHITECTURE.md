@@ -67,6 +67,8 @@ tests/
 
 **ADR-12 · Honest case studies.** The case study outline is assembled from saved data only (brief facts, latest submitted text per stage, review summaries). Sections without evidence are rendered as "Missing evidence" notes; the drafting prompt forbids inventing outcomes.
 
+**ADR-13 · Visual design.** Colours come from the IBM Carbon palette (light: Gray 10 layering with Blue 60 interactive; dark: Gray 100) and are defined once as CSS tokens in `src/app/globals.css` (contrast-checked to WCAG AA). Spacing follows Carbon's 8 px rhythm and body type uses Carbon's 14/20 scale. The shell follows a dashboard layout: a gray app frame with a sectioned sidebar (workspace card, navigation with counts, user card with the language switch) and a white content panel with a breadcrumb top bar. Latin text uses Plus Jakarta Sans and Arabic uses Tajawal, both self-hosted through Fontsource so the app works offline.
+
 ## Adding an AI provider
 
 1. Implement `AIProvider` in `src/server/ai/<provider>.ts` (map the provider's errors to `AIError`, honour `capabilities`, reuse `runStructuredWithRecovery`).

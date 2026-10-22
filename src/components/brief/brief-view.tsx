@@ -74,7 +74,7 @@ export function BriefView({ brief, workflow, stageTitles }: { brief: BriefCore; 
         </CardHeader>
         <CardContent className="grid gap-3 sm:grid-cols-2" dir={dir}>
           {brief.focusFeatures.map((f) => (
-            <div key={f.id} className="rounded-md border border-border p-3">
+            <div key={f.id} data-testid="focus-feature" className="rounded-lg border border-border p-3">
               <p className="font-medium">{f.name}</p>
               <p className="mt-1 text-sm text-muted">{f.description}</p>
               {f.userValue ? <p className="mt-2 text-xs text-subtle">{t("userValue")}: {f.userValue}</p> : null}

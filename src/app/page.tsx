@@ -1,8 +1,10 @@
-import { ArrowRight, CheckCircle2, Clock, FileText, Loader2, Plus, RotateCcw, Sparkles } from "lucide-react";
+import { ArrowRight, CalendarDays, CheckCircle2, Clock, FileText, Loader2, Plus, RotateCcw, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { PageContainer } from "@/components/common/page";
 import { LoadSampleButton } from "@/components/common/sample-button";
+import { ActivityHeatmap } from "@/components/dashboard/activity-heatmap";
+import { StatCard } from "@/components/dashboard/stat-card";
 import { DecisionBadge, MockBadge, StageStatusBadge } from "@/components/common/status";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -10,9 +12,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, EmptyState, PageHeader, Progress } from "@/components/ui/misc";
 import { getAppLocale } from "@/i18n/request";
 import { stageTitle } from "@/domain/stages/definitions";
-import { formatDateTime } from "@/lib/format";
+import { formatDate, formatDateTime } from "@/lib/format";
 import { getProviderStatus } from "@/server/ai";
-import { computeLearningProgress, getDashboardData } from "@/server/services/progress";
+import { activityByDay, computeLearningProgress, getDashboardData } from "@/server/services/progress";
 import { getSettings } from "@/server/settings";
 
 export default async function DashboardPage() {
@@ -20,7 +22,7 @@ export default async function DashboardPage() {
   const te = await getTranslations("enums");
   const locale = await getAppLocale();
   const [data, settings, status] = await Promise.all([getDashboardData(), getSettings(), getProviderStatus()]);
-  const learning = await computeLearningProgress({ includeDemo: true });
+  const [learning, activity] = await Promise.all([computeLearningProgress({ includeDemo: true }), activityByDay(18)]);
   const hasProjects = data.active.length + data.completed.length > 0;
 
   return (
@@ -28,6 +30,12 @@ export default async function DashboardPage() {
       <PageHeader
         title={settings.displayName ? t("welcomeNamed", { name: settings.displayName }) : t("welcome")}
         description={t("subtitle")}
+        meta={
+          <>
+            <CalendarDays aria-hidden />
+            {formatDate(new Date(), locale, { dateStyle: "full" })}
+          </>
+        }
         actions={
           <>
             {data.lastActive ? (
@@ -78,6 +86,35 @@ export default async function DashboardPage() {
           }
         />
       ) : (
+        <>
+        <section aria-label={t("kpis")} className="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          <StatCard
+            label={t("kpiActive")}
+            hint={t("kpiActiveHint")}
+            value={data.active.length}
+            tag={t("kpiCompletedTag", { count: data.completed.length })}
+            tagTone={data.completed.length ? "success" : "neutral"}
+          />
+          <StatCard label={t("kpiStages")} hint={t("kpiStagesHint")} value={learning.stagesCompleted} context={t("kpiStagesContext")} />
+          <StatCard
+            label={t("avgScore")}
+            hint={t("kpiScoreHint")}
+            value={learning.averageScore ?? "—"}
+            tag={learning.passRate === null ? undefined : t("kpiPassRate", { rate: learning.passRate })}
+            tagTone={learning.passRate === null ? "neutral" : learning.passRate >= 50 ? "success" : "danger"}
+            context={learning.demoReviewCount > 0 ? t("includesDemo", { count: learning.demoReviewCount }) : t("kpiReviewsContext", { count: learning.reviewCount })}
+          />
+          <StatCard
+            label={t("kpiOpenTasks")}
+            hint={t("kpiOpenTasksHint")}
+            value={learning.openTasks}
+            tag={data.revisionRequests.length ? t("kpiStagesNeedRevision", { count: data.revisionRequests.length }) : undefined}
+            tagTone="danger"
+          />
+        </section>
+        <div className="mb-6">
+          <ActivityHeatmap days={activity} locale={locale} />
+        </div>
         <div className="grid gap-6 lg:grid-cols-3">
           <div className="flex flex-col gap-6 lg:col-span-2">
             <section aria-labelledby="active-heading">
@@ -285,6 +322,7 @@ export default async function DashboardPage() {
             </Card>
           </div>
         </div>
+        </>
       )}
     </PageContainer>
   );

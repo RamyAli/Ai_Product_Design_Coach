@@ -240,3 +240,40 @@ export async function getDashboardData() {
     })),
   };
 }
+
+export interface ActivityDay {
+  /** Local calendar date, YYYY-MM-DD */
+  date: string;
+  submissions: number;
+  reviews: number;
+}
+
+function localDateKey(d: Date): string {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
+/** Submissions and formal reviews per day for the last `weeks` weeks (ending today). */
+export async function activityByDay(weeks = 18): Promise<ActivityDay[]> {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const start = new Date(today);
+  start.setDate(start.getDate() - (weeks * 7 - 1));
+  const [subs, reviews] = await Promise.all([
+    db.submission.findMany({ where: { status: "submitted", submittedAt: { gte: start } }, select: { submittedAt: true } }),
+    db.review.findMany({ where: { createdAt: { gte: start } }, select: { createdAt: true } }),
+  ]);
+  const days = new Map<string, ActivityDay>();
+  for (let d = new Date(start); d <= today; d.setDate(d.getDate() + 1)) {
+    const key = localDateKey(d);
+    days.set(key, { date: key, submissions: 0, reviews: 0 });
+  }
+  for (const s of subs) if (s.submittedAt) days.get(localDateKey(s.submittedAt))!.submissions++;
+  for (const r of reviews) {
+    const day = days.get(localDateKey(r.createdAt));
+    if (day) day.reviews++;
+  }
+  return [...days.values()];
+}

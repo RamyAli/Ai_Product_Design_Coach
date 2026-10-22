@@ -31,7 +31,7 @@ export function ProjectNav({ projectId }: { projectId: string }) {
                 aria-current={active ? "page" : undefined}
                 className={cn(
                   "inline-block border-b-2 px-3 py-2.5 text-sm font-medium transition-colors",
-                  active ? "border-primary text-foreground" : "border-transparent text-muted hover:border-border-strong hover:text-foreground",
+                  active ? "border-interactive font-semibold text-foreground" : "border-transparent text-muted hover:border-border-strong hover:text-foreground",
                 )}
               >
                 {t(tab.key)}

@@ -20,7 +20,7 @@ export default async function ProjectLayout({ children, params }: { children: Re
   const dir = detectTextDirection(project.title);
   return (
     <div>
-      <div className="border-b border-border bg-surface">
+      <div className="border-b border-border">
         <div className="mx-auto w-full max-w-[1600px] px-4 pt-5 sm:px-6 lg:px-8">
           <div className="flex flex-wrap items-center gap-2">
             <Badge variant={project.status === "completed" ? "success" : project.status === "draft" ? "neutral" : "primary"}>{te(`projectStatus.${project.status}`)}</Badge>
@@ -30,7 +30,7 @@ export default async function ProjectLayout({ children, params }: { children: Re
             <Badge variant="outline">{te(`language.${project.preferredLanguage}`)}</Badge>
           </div>
           <div className="mt-2 flex flex-wrap items-center justify-between gap-3">
-            <h1 className="text-xl font-semibold tracking-tight" dir={dir === "auto" ? undefined : dir}>
+            <h1 className="text-2xl font-semibold" dir={dir === "auto" ? undefined : dir}>
               {project.title}
             </h1>
             {project.status === "draft" ? <ActivateProjectButton projectId={project.id} /> : null}

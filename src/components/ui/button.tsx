@@ -4,22 +4,22 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 export const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
-        primary: "bg-primary text-on-primary hover:bg-primary-hover shadow-sm",
-        secondary: "bg-surface-muted text-foreground hover:bg-border",
-        outline: "border border-border-strong bg-surface text-foreground hover:bg-surface-muted",
-        ghost: "text-foreground hover:bg-surface-muted",
-        danger: "bg-danger text-white hover:opacity-90 dark:text-black",
+        primary: "bg-interactive text-on-interactive hover:bg-interactive-hover",
+        secondary: "bg-surface-muted text-foreground hover:bg-surface-hover",
+        outline: "border border-border bg-surface text-foreground shadow-[var(--shadow-card)] hover:bg-surface-muted",
+        ghost: "text-foreground hover:bg-surface-hover",
+        danger: "bg-danger-strong text-white hover:opacity-90",
         link: "text-primary underline-offset-4 hover:underline px-0 h-auto",
       },
       size: {
         sm: "h-8 px-3 text-xs",
-        md: "h-9 px-4",
-        lg: "h-11 px-5 text-base",
-        icon: "h-9 w-9",
+        md: "h-10 px-4",
+        lg: "h-12 px-5 text-base",
+        icon: "h-10 w-10",
         "icon-sm": "h-8 w-8",
       },
     },
