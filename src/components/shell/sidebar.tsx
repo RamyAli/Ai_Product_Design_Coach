@@ -7,6 +7,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
 import { setLocaleAction } from "@/app/actions/settings";
+import { UserAvatar, type AvatarInfo } from "@/components/profile/user-avatar";
 import type { Locale } from "@/domain/enums";
 import { cn } from "@/lib/utils";
 
@@ -20,6 +21,8 @@ export interface ShellInfo {
   provider: ShellProviderInfo;
   locale: Locale;
   displayName: string;
+  role: string;
+  avatar: AvatarInfo;
   activeProjects: number;
   revisionRequests: number;
 }
@@ -43,12 +46,6 @@ function isActive(pathname: string, item: NavItem) {
   if (item.exact) return pathname === item.href;
   if (item.excludes && pathname.startsWith(item.excludes)) return false;
   return pathname === item.href || pathname.startsWith(`${item.href}/`);
-}
-
-export function initials(name: string): string {
-  const parts = name.trim().split(/\s+/).filter(Boolean);
-  if (parts.length === 0) return "";
-  return (parts[0]![0]! + (parts[1]?.[0] ?? "")).toUpperCase();
 }
 
 function Brand() {
@@ -136,15 +133,15 @@ function UserCard({ info }: { info: ShellInfo }) {
   const name = info.displayName || t("you");
   return (
     <div className="rounded-xl border border-border bg-surface">
-      <Link href="/settings#general" className="flex items-center gap-3 rounded-t-xl p-3 hover:bg-surface-muted">
-        <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-success-strong text-sm font-bold text-white" aria-hidden>
-          {initials(name) || "•"}
-        </span>
+      <Link href="/settings#profile" className="flex items-center gap-3 rounded-t-xl p-3 hover:bg-surface-muted" aria-label={t("editProfile", { name })}>
+        <UserAvatar {...info.avatar} className="size-10" />
         <span className="min-w-0 flex-1">
           <span className="block truncate text-sm font-semibold" dir="auto">
             {name}
           </span>
-          <span className="block truncate text-xs text-subtle">{t("localData")}</span>
+          <span className="block truncate text-xs text-subtle" dir={info.role ? "auto" : undefined}>
+            {info.role || t("localData")}
+          </span>
         </span>
       </Link>
       <button

@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { PageContainer } from "@/components/common/page";
+import { ProfileCard } from "@/components/settings/profile-card";
 import { SettingsClient } from "@/components/settings/settings-client";
 import { PageHeader } from "@/components/ui/misc";
 import { getProviderStatus } from "@/server/ai";
@@ -27,6 +28,17 @@ export default async function SettingsPage() {
   return (
     <PageContainer>
       <PageHeader title={t("title")} description={t("subtitle")} />
+      <div className="mb-6">
+        <ProfileCard
+          profile={{
+            displayName: settings.displayName,
+            profileRole: settings.profileRole,
+            profileBio: settings.profileBio,
+            avatar: settings.avatar,
+            avatarUpload: settings.avatarUpload,
+          }}
+        />
+      </div>
       <SettingsClient
         settings={settings}
         provider={provider}

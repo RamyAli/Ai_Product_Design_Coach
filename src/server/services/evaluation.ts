@@ -207,8 +207,13 @@ export interface ReviewJobInput {
 /** Job handler: performs one formal review of a submitted version and persists it immutably. */
 export async function runReviewJob(job: AiJob, signal: AbortSignal): Promise<JobOutcome> {
   const input = parseJson<ReviewJobInput>(job.inputJson, { submissionId: "" });
+  return reviewSubmission(input.submissionId, signal, await getProvider());
+}
+
+/** Reviews a submitted version with the given provider. Sample data passes the offline mock explicitly. */
+export async function reviewSubmission(submissionId: string, signal: AbortSignal, provider: AIProvider): Promise<JobOutcome> {
   const submission = await db.submission.findUnique({
-    where: { id: input.submissionId },
+    where: { id: submissionId },
     include: { assets: { orderBy: { createdAt: "asc" } }, stage: true, project: true },
   });
   if (!submission) throw notFound("Submission");
@@ -217,7 +222,6 @@ export async function runReviewJob(job: AiJob, signal: AbortSignal): Promise<Job
   const { stage, project } = submission;
   try {
     const settings = await getSettings();
-    const provider = await getProvider();
     const brief = readBrief(project);
     const rubric = rubricForStage(stage);
     const def = getStageDefinition(stage.stageKey);

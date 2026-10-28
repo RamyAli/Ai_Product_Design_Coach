@@ -24,6 +24,7 @@ export default async function ProjectsPage({ searchParams }: { searchParams: Pro
   const te = await getTranslations("enums");
   const locale = await getAppLocale();
   const showArchived = (await searchParams).archived === "1";
+  const sampleCount = await db.project.count({ where: { isSample: true } });
   const projects = await db.project.findMany({
     where: showArchived ? { status: "archived" } : { status: { not: "archived" } },
     orderBy: [{ updatedAt: "desc" }],
@@ -37,6 +38,7 @@ export default async function ProjectsPage({ searchParams }: { searchParams: Pro
         description={t("subtitle")}
         actions={
           <>
+            {projects.length > 0 && sampleCount === 0 ? <LoadSampleButton variant="ghost" /> : null}
             <Button asChild variant="outline">
               <Link href={showArchived ? "/projects" : "/projects?archived=1"}>{showArchived ? t("showActive") : t("showArchived")}</Link>
             </Button>

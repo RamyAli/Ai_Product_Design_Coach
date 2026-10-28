@@ -34,7 +34,7 @@ Both `dev` and `start` bind to `127.0.0.1` so the app is not exposed to your net
 Open the app and either:
 
 - **Generate a project** (Generate Project → Random or Custom), or
-- **Load a sample project** from the dashboard or Settings → Your data.
+- **Load sample projects** from My Projects, the dashboard or Settings → Your data. This adds three clearly labelled samples: one complete, one halfway (with a stage waiting on revisions) and one not started. Their reviews always come from the offline demo reviewer, even when an API key is set, so loading them costs nothing.
 
 Without an API key everything works, but generation uses a curated set of fictional sample ideas and reviews come from an offline heuristic reviewer. Both are labelled "Sample"/"Demo" everywhere and are never presented as AI evaluations.
 
@@ -94,7 +94,8 @@ Database migrations are versioned in `prisma/migrations` and applied with `npm r
 4. **Get a formal review** — score out of 100, decision (*pass*, *revise*, *needs more evidence*) with the reasons, criterion scores with evidence references, issues by severity (observed → why it matters → how to improve), missing deliverables, assumptions to validate, questions, limitations and confidence.
 5. **Revise** — mark revision tasks done or dismiss them with a reason, ask the mentor follow-up questions (never changes the score), start a new version from the previous one, resubmit. The new review shows what was resolved, what remains and what is new. Old reviews are immutable.
 6. **Complete the stage** once the latest version passes, mandatory deliverables are present, no critical tasks are open and the required checklist is done. The next stage unlocks.
-7. **Track progress** (stages, scores, skill areas, recurring feedback themes) and **draft a case study** from your actual evidence after four completed stages.
+7. **Set up your profile** (Settings → Profile, or click your name in the sidebar): name, role, a short bio and an avatar. Pick one of the two animated defaults, one of 45 3D avatars, or upload your own photo (PNG, JPEG or WebP, cropped to a square and stored in `APP_DATA_DIR/uploads/_profile`).
+8. **Track progress** (stages, scores, skill areas, recurring feedback themes) and **draft a case study** from your actual evidence after four completed stages.
 
 **Practice mode** (per project) lets you open any stage without completing earlier ones. It never marks a stage as passed — only a passing formal review can.
 
@@ -147,7 +148,11 @@ See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the structure and design de
 - Single user, no authentication: run it locally only.
 - No OCR for scanned PDFs (flagged clearly; use a PDF-capable provider or upload text/images).
 - Figma content is only read with your own token and only what Figma permits; frame renders are limited to four per link.
-- The offline demo reviewer checks presence and length of deliverables only; it cannot judge quality or see images. Visual stages (4–6) can be completed in demo mode only because the demo reviewer treats attached images as present — the review is labelled as a demo.
+- The offline demo reviewer checks presence and length of deliverables only; it cannot judge quality or see images, so in demo mode the visual stages (4–6) return *needs more evidence*. The sample projects are the exception: they are built with a sample reviewer that treats the attached placeholder wireframes as present, and their reviews still say the images were not inspected.
 - AI jobs run in-process. If the app is stopped mid-review, the review is marked as interrupted and can be retried; the submission is never lost.
 - Cost estimates use a static price table and rough token heuristics.
 - The UI is desktop-first; tablet and phone layouts are supported but long review pages are best on larger screens.
+
+## Credits
+
+The profile avatars in `public/avatars` come from the [Free 3D Memoji Avatars Pack](https://www.figma.com/design/vwEAU9Knv5JrJ0ccBJZ8uc/Free-3D-Memoji-Avatars-Pack--Community-) Figma Community file. Check that file's licence before redistributing them.

@@ -95,16 +95,6 @@ export function SettingsClient({
           </CardTitle>
         </CardHeader>
         <CardContent className="grid gap-4 md:grid-cols-2">
-          <Field id="set-name" label={t("displayName")} optional={tc("optional")}>
-            {(p) => (
-              <div className="flex gap-2">
-                <Input {...p} value={form.displayName} maxLength={60} onChange={(e) => setForm({ ...form, displayName: e.target.value })} />
-                <Button variant="outline" disabled={pending || form.displayName === settings.displayName} onClick={() => saveSettings({ displayName: form.displayName })}>
-                  {tc("save")}
-                </Button>
-              </div>
-            )}
-          </Field>
           <Field id="set-language" label={t("language")} hint={t("languageHint")}>
             {(p) => (
               <Select
@@ -461,7 +451,7 @@ export function SettingsClient({
                 onClick={() =>
                   start(async () => {
                     const res = await loadSampleProjectAction();
-                    if (res.ok) router.push(`/projects/${res.data.projectId}`);
+                    if (res.ok) router.push("/projects");
                     else toast.push(res.error.message, "error");
                   })
                 }

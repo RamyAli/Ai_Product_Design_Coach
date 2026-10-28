@@ -23,7 +23,7 @@ export function LoadSampleButton({ variant = "outline", size }: Pick<ButtonProps
           const res = await loadSampleProjectAction();
           if (res.ok) {
             toast.push(t("sampleLoaded"), "success");
-            router.push(`/projects/${res.data.projectId}`);
+            router.push("/projects");
           } else toast.push(res.error.message, "error");
         })
       }

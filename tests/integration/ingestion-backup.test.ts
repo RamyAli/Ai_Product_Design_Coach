@@ -6,7 +6,7 @@ import { buildEvidence } from "@/server/services/evaluation";
 import { createProject } from "@/server/services/projects";
 import { ensureDraft, saveDraft } from "@/server/services/submissions";
 import { clearAllData, createBackup, readBackupFile, restoreBackup, exportProjectData } from "@/server/services/backup";
-import { loadSampleProject, removeSampleProjects } from "@/server/services/sample";
+import { loadSampleProjects, removeSampleProjects } from "@/server/services/sample";
 import { updateSettings } from "@/server/settings";
 import { buildMockBrief } from "@/server/ai/mock/generate";
 import { GeneratorInputSchema } from "@/domain/brief";
@@ -110,11 +110,34 @@ describe("backup, restore and data management", () => {
     await expect(restoreBackup(Buffer.from("not a zip"))).rejects.toMatchObject({ code: "validation" });
   });
 
-  it("loads and removes clearly labelled sample projects", async () => {
-    const sample = await loadSampleProject("ar");
-    expect(sample.isSample).toBe(true);
-    expect(sample.preferredLanguage).toBe("ar");
-    expect(await removeSampleProjects()).toBeGreaterThanOrEqual(1);
+  it("loads three labelled sample projects at different stages of progress, using only the demo reviewer", async () => {
+    const [complete, halfway, fresh] = await loadSampleProjects("ar");
+    for (const p of [complete!, halfway!, fresh!]) {
+      expect(p.isSample).toBe(true);
+      expect(p.preferredLanguage).toBe("ar");
+    }
+    const stagesOf = (id: string) => db.stage.findMany({ where: { projectId: id }, orderBy: { orderIndex: "asc" } });
+
+    expect(complete!.status).toBe("completed");
+    expect((await stagesOf(complete!.id)).every((s) => s.status === "completed")).toBe(true);
+
+    const half = await stagesOf(halfway!.id);
+    expect(half.slice(0, 4).every((s) => s.status === "completed")).toBe(true);
+    expect(half[4]!.status).toBe("needs_revision");
+    expect(half.slice(5).every((s) => s.status === "locked")).toBe(true);
+    expect(halfway!.currentStageId).toBe(half[4]!.id);
+
+    const untouched = await stagesOf(fresh!.id);
+    expect(untouched[0]!.status).toBe("available");
+    expect(await db.submission.count({ where: { projectId: fresh!.id } })).toBe(0);
+
+    const reviews = await db.review.findMany({ where: { projectId: { in: [complete!.id, halfway!.id] } } });
+    expect(reviews).toHaveLength(13);
+    expect(reviews.every((r) => r.isMock && r.provider === "mock")).toBe(true);
+    const sampleText = await db.submission.findFirstOrThrow({ where: { projectId: complete!.id } });
+    expect(sampleText.textContent).toContain("محتوى تجريبي");
+
+    expect(await removeSampleProjects()).toBe(3);
     expect(await db.project.count({ where: { isSample: true } })).toBe(0);
   });
 });

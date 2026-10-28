@@ -5,7 +5,7 @@ import { runAction } from "@/server/action";
 import { AppError } from "@/server/errors";
 import { clearAllData, createBackup } from "@/server/services/backup";
 import { saveCaseStudy, startCaseStudyDraft } from "@/server/services/caseStudy";
-import { loadSampleProject, removeSampleProjects } from "@/server/services/sample";
+import { loadSampleProjects, removeSampleProjects } from "@/server/services/sample";
 import { getSettings } from "@/server/settings";
 
 export async function createBackupAction() {
@@ -23,8 +23,8 @@ export async function clearAllDataAction(confirmation: string) {
 export async function loadSampleProjectAction() {
   return runAction(async () => {
     const settings = await getSettings();
-    const project = await loadSampleProject(settings.locale);
-    return { projectId: project.id };
+    const projects = await loadSampleProjects(settings.locale);
+    return { count: projects.length };
   });
 }
 

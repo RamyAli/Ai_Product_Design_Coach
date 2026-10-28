@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { AVATAR_ID, DEFAULT_AVATAR } from "@/domain/avatars";
 import { LocaleSchema, STRICTNESS_LEVELS, THEMES } from "@/domain/enums";
 import { LIMITS } from "./config";
 import { db } from "./db";
@@ -9,6 +10,11 @@ export const DEFAULT_MODEL = "claude-opus-5-5";
 
 export const AppSettingsSchema = z.object({
   displayName: z.string().trim().max(60).default(""),
+  profileRole: z.string().trim().max(80).default(""),
+  profileBio: z.string().trim().max(280).default(""),
+  avatar: z.string().regex(AVATAR_ID).default(DEFAULT_AVATAR),
+  /** File name of the uploaded photo inside uploads/_profile; empty when none. */
+  avatarUpload: z.string().regex(/^(avatar-[0-9a-f-]{36}\.webp)?$/).default(""),
   locale: LocaleSchema.default("en"),
   theme: z.enum(THEMES).default("system"),
   aiProvider: z.enum(PROVIDER_PREFERENCES).default("auto"),
@@ -43,8 +49,23 @@ export async function getSettings(): Promise<AppSettings> {
   return merged as AppSettings;
 }
 
+/**
+ * Validates a partial settings update. Zod fills defaults for keys a partial schema does not
+ * receive, so only the keys actually present in the input are kept; otherwise saving one setting
+ * would silently reset all the others.
+ */
+export function parseSettingsPatch(input: unknown, omit: readonly AppSettingKey[] = []): Partial<AppSettings> {
+  const raw = Object.fromEntries(
+    Object.entries(input && typeof input === "object" ? input : {}).filter(([key]) => key in AppSettingsSchema.shape && !omit.includes(key as AppSettingKey)),
+  );
+  const parsed = AppSettingsSchema.partial().parse(raw) as Record<string, unknown>;
+  const out: Record<string, unknown> = {};
+  for (const key of Object.keys(raw)) if (parsed[key] !== undefined) out[key] = parsed[key];
+  return out as Partial<AppSettings>;
+}
+
 export async function updateSettings(patch: Partial<AppSettings>): Promise<AppSettings> {
-  const validated = AppSettingsSchema.partial().parse(patch);
+  const validated = parseSettingsPatch(patch);
   await db.$transaction(
     Object.entries(validated).map(([key, value]) =>
       db.appSettings.upsert({

@@ -7,7 +7,8 @@ import { getProvider, getProviderStatus } from "@/server/ai";
 import { runAction } from "@/server/action";
 import { AppError } from "@/server/errors";
 import { describeSecret, setSecret } from "@/server/secrets";
-import { AppSettingsSchema, updateSettings } from "@/server/settings";
+import { saveProfile } from "@/server/services/profile";
+import { parseSettingsPatch, updateSettings } from "@/server/settings";
 import { LOCALE_COOKIE, THEME_COOKIE } from "@/lib/locale";
 
 const YEAR = 60 * 60 * 24 * 365;
@@ -32,8 +33,14 @@ export async function setThemeAction(theme: string) {
 
 export async function updateSettingsAction(patch: unknown) {
   return runAction(async () => {
-    const parsed = AppSettingsSchema.partial().omit({ locale: true, theme: true }).parse(patch);
-    await updateSettings(parsed);
+    await updateSettings(parseSettingsPatch(patch, ["locale", "theme", "avatar", "avatarUpload"]));
+    return null;
+  });
+}
+
+export async function updateProfileAction(profile: unknown) {
+  return runAction(async () => {
+    await saveProfile(profile);
     return null;
   });
 }

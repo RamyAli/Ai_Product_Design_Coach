@@ -63,6 +63,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                   provider: { active: status.active, model: status.model, realProviderReady: status.realProviderReady },
                   locale,
                   displayName: settings.displayName,
+                  role: settings.profileRole,
+                  avatar: { avatar: settings.avatar, uploadKey: settings.avatarUpload },
                   activeProjects: projects.filter((p) => p.status === "active" || p.status === "draft").length,
                   revisionRequests,
                 }}

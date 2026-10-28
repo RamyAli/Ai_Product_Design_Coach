@@ -69,6 +69,8 @@ tests/
 
 **ADR-13 · Visual design.** Colours come from the IBM Carbon palette (light: Gray 10 layering with Blue 60 interactive; dark: Gray 100); notices use an Apple-style neutral card with a coloured icon tile and are defined once as CSS tokens in `src/app/globals.css` (contrast-checked to WCAG AA). Spacing follows Carbon's 8 px rhythm and body type uses Carbon's 14/20 scale. The shell follows a dashboard layout: a gray app frame with a sectioned sidebar (workspace card, navigation with counts, user card with the language switch) and a white content panel with a breadcrumb top bar. Latin text uses Plus Jakarta Sans and Arabic uses Tajawal, both self-hosted through Fontsource so the app works offline.
 
+**ADR-14 · Profile and sample data.** The profile (name, role, bio, avatar) is stored with the other app settings. Settings updates write only the keys they receive, because Zod fills defaults for missing keys in a partial schema. Preset avatars are static WebP files in `public/avatars`; an uploaded photo is re-encoded as a 256 px WebP under `uploads/_profile`, so backups, restores and "clear all data" include it, and is served by `/api/profile/avatar`. Sample projects are created through the normal services (submit → review → complete stage) rather than by writing finished states directly, always with the offline reviewer so every result is labelled as a demo. Afterwards only their timestamps are moved into the past, so the dashboard shows a plausible activity history.
+
 ## Adding an AI provider
 
 1. Implement `AIProvider` in `src/server/ai/<provider>.ts` (map the provider's errors to `AIError`, honour `capabilities`, reuse `runStructuredWithRecovery`).

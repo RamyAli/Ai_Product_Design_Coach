@@ -179,12 +179,32 @@ h3 {
   unicode-bidi: isolate;
 }
 
+/* Idle motion for the default avatars: a slow head bob with a slight tilt */
+@keyframes avatar-idle {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-5%) rotate(-5deg); }
+  50% { transform: translateY(0) rotate(0deg); }
+  75% { transform: translateY(-3%) rotate(4deg); }
+}
+.avatar-idle {
+  transform-origin: 50% 85%;
+  animation: avatar-idle 4.2s ease-in-out infinite;
+}
+.avatar-idle-alt {
+  animation-duration: 4.8s;
+  animation-delay: -1.6s;
+  animation-direction: reverse;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
+  }
+  .avatar-idle {
+    animation: none !important;
   }
 }
 
