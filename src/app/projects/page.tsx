@@ -38,7 +38,7 @@ export default async function ProjectsPage({ searchParams }: { searchParams: Pro
         description={t("subtitle")}
         actions={
           <>
-            {projects.length > 0 && sampleCount === 0 ? <LoadSampleButton variant="ghost" /> : null}
+            {projects.length > 0 && sampleCount < 3 ? <LoadSampleButton /> : null}
             <Button asChild variant="outline">
               <Link href={showArchived ? "/projects" : "/projects?archived=1"}>{showArchived ? t("showActive") : t("showArchived")}</Link>
             </Button>
